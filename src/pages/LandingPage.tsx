@@ -25,8 +25,8 @@ export default function LandingPage() {
               Get Started
             </Button>
           </div>
-          <div className="flex-1 flex justify-center md:justify-end items-start mt-8 md:mt-0">
-            <div className="flex-1 flex justify-center md:justify-end items-center mt-[-4rem] md:mt-0">
+          <div className="flex-1 flex justify-center md:justify-end items-center">
+            <div className="w-64 md:w-80 lg:w-96"> {/* <-- limits the width */}
               <PlayListCard
                 id={1}
                 title="My Current Gym Playlist!"
