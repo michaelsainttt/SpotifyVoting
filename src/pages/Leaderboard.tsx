@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select"
 
 
+
 export default function Leaderboard(){
         type Playlist = {
             id: number;
@@ -66,8 +67,10 @@ export default function Leaderboard(){
   }, [searchTerm, sortBy]);
 
         return (
-    <div className="min-h-screen bg-[url('blob-haikei.svg')] bg-cover text-white">
-      <NavBar />
+<div
+  className="min-h-screen bg-cover text-white"
+  style={{ backgroundImage: "url('/blob-haikei.svg')" }}
+>      <NavBar />
       <div className="max-w-4xl mx-auto p-6 flex flex-col gap-2 mt-8">
         <div className = "flex gap-2 justify-center">
           <Input type = "text" value = {searchTerm} onChange = {(e) => setSearchTerm(e.target.value)} placeholder = "Search playlists..." className = "flex-1 bg-gray-800/80 border-gray-600 text-white placeholder-gray-400 rounded-lg focus-visible:ring-2 focus-visible:ring-green-500"/>          
