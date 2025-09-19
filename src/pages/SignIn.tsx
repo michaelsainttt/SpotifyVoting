@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export function SignIn() {
   const [email, setEmail] = useState("");
@@ -85,9 +86,9 @@ export function SignIn() {
           <CardFooter className="flex justify-center">
             <p className="text-sm text-gray-400">
               Don't have an account?{" "}
-              <Button variant="link" className="text-green-400 hover:text-green-300" onClick={() => (window.location.href = "/signup")}>
+              <Link to="/signup" className="text-green-400 hover:text-green-300">
                 Sign Up
-              </Button>
+              </Link>
             </p>
           </CardFooter>
         </Card>
