@@ -1,13 +1,11 @@
 import NavBar from "@/NavBar";
 import PlayListCard from "@/PlayListCard";
-import { SignIn } from "./SignIn";
 import TextGrab from "./TextGrab";
 import { Button } from "@/components/ui/button";
 import TrendingPlaylists from "@/TrendingPlaylists";
 import { motion } from "framer-motion";
 import HowItWorks from "@/HowItWorks";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 
 export default function LandingPage() {
   const navigate = useNavigate();
