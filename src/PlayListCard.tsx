@@ -11,29 +11,65 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Toggle } from "@/components/ui/toggle";
 import { Heart } from "lucide-react";
+import { supabase } from "./lib/supabaseClient";
+import { useEffect } from "react";
 
 type PlayListCardProps = {
+  id: number;
   title: string;
   description: string;
   tags: string[];
-  spotifyUrl: string;
+  spotify_url: string;
   initialLikes?: number;
 };
 
 export default function PlayListCard({
+  id,
   title,
   description,
   tags,
-  spotifyUrl,
+  spotify_url,
   initialLikes = 0,
 }: PlayListCardProps) {
+
   const [liked, setLiked] = useState(false);
   const [count, setCount] = useState(initialLikes);
 
-  const handleClick = () => {
-    setLiked((prev) => !prev);
-    setCount((prev) => (liked ? prev - 1 : prev + 1));
-  };
+  useEffect(() => {
+    const savedLikes = localStorage.getItem(`playlist-${id}-liked`);
+    if (savedLikes) {
+      setLiked(JSON.parse(savedLikes));
+    }
+
+    const savedCount = localStorage.getItem(`playlist-${id}-count`);
+    if (savedCount) {
+      setCount(Number(savedCount));
+    }
+  }, [id]);
+
+  const handleClick = async () => {
+  const newLiked = !liked;
+  const newCount = liked ? count - 1 : count + 1;
+  setLiked(!liked);
+  setCount(newCount);
+
+  localStorage.setItem(`playlist-${id}-liked`, JSON.stringify(newLiked));
+  localStorage.setItem(`playlist-${id}-count`, newCount.toString());
+
+  // Update Supabase
+  const { error } = await supabase
+    .from("playlists")
+    .update({ votes: newCount })
+    .eq("id", id); // or use playlist ID if available
+
+  if (error) console.error("Failed to update votes:", error);
+
+};
+
+  function getSpotifyEmbedUrl(url: string) {
+  if (!url) return "";
+  return url.replace("open.spotify.com/playlist/", "open.spotify.com/embed/playlist/");
+  }
 
   return (
     <motion.div
@@ -66,12 +102,11 @@ export default function PlayListCard({
           </div>
         </CardHeader>
 
-        <CardContent>
-          {/* Spotify Embed */}
-          <div className="mt-4 overflow-hidden rounded-xl shadow-md border border-green-800/40">
+        <CardContent className="px-4 py-2">
+          <div className="overflow-hidden rounded-xl shadow-md border border-green-800/40">
             <iframe
-              src={spotifyUrl}
-              className="w-full h-64"
+              src={getSpotifyEmbedUrl(spotify_url)}
+              className="w-full h-64 sm:h-80 md:h-96 lg:h-[500px]"
               allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
             />
           </div>

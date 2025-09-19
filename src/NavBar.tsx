@@ -8,12 +8,37 @@ import {
   NavigationMenuTrigger,
   NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
-
+import { useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "./lib/supabaseClient";
 
 
 export default function NavBar() {
+
+    const [session, setSession] = useState<any>(null);
+
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({data: {session} } ) => {
+      setSession(session);
+    });
+
+    const {data: listener} = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    })
+    return () => {
+    listener.subscription.unsubscribe();
+  }
+
+  }, []);
+
+
+   const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setSession(null);
+  };
 
   const navigate = useNavigate();
   return (
@@ -42,7 +67,12 @@ export default function NavBar() {
       </NavigationMenuItem>
     </NavigationMenuList>
   </NavigationMenu>
-  <Button className = "px-6 hover:text-green-500 transition-colors cursor-pointer" onClick = {() => navigate("/signin")}>Sign In</Button>
+  {session ? (
+       <Button onClick = {handleLogout} className = "px-6 hover:text-green-500 transition-colors cursor-pointer">Logout</Button>
+    ) : (
+      <Button className = "px-6 hover:text-green-500 transition-colors cursor-pointer" onClick = {() => navigate("/signin")}>Sign In</Button>
+    )
+  }
 </div>
   );
 }

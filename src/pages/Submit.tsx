@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import {
   Card,
   CardAction,
@@ -12,8 +13,28 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { supabase } from "@/lib/supabaseClient";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Submit(){
+    const [newTask, setNewTask] = useState({title : "",description: "", tags: [] as string[], spotify_url: "",
+ })
+
+ const navigate = useNavigate();
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    const {error} = await supabase.from("playlists").insert(newTask).single();
+
+    if(error) {
+        console.error("Error adding task", error.message);
+    }
+
+    navigate("/leaderboard");
+
+ }
+
     return(
         <div className="bg-[url('/signinpagebg.svg')] bg-cover bg-center w-full min-h-screen">
             <NavBar/>
@@ -37,30 +58,30 @@ export default function Submit(){
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <form className = "flex flex-col gap-5">
+                            <form className = "flex flex-col gap-5" onSubmit={handleSubmit}>
                                 <div className = "grid gap-3">
                                     <Label className = "text-gray-300" htmlFor = "string">
                                         Playlist Title
                                     </Label>
-                                    <Input className ="bg-gray-800/80 border border-gray-700" placeholder = "Enter Playlist Title" required></Input>
+                                    <Input className ="bg-gray-800/80 border border-gray-700" placeholder = "Enter Playlist Title" required onChange={(e) => setNewTask((prev) => ({...prev, title: e.target.value}))} ></Input>
                                 </div>
                                 <div className = "grid gap-3">
                                     <Label className = "text-gray-300">
                                         Description
                                     </Label>
-                                    <Input className ="bg-gray-800/80 border border-gray-700" placeholder = "Enter Description" required/>
+                                    <Input className ="bg-gray-800/80 border border-gray-700" placeholder = "Enter Description" required onChange= {(e) => setNewTask((prev) => ({...prev, description: e.target.value})) }/>
                                 </div>
                                 <div className = "grid gap-3">
                                     <Label className = "text-gray-300" htmlFor = "website">
                                         Spotify Playlist Link
                                     </Label>
-                                    <Input id = "website" type = "url" required className ="bg-gray-800/80 border border-gray-700" placeholder = "Enter Playlist URL"></Input>
+                                    <Input id = "website" type = "url" required className ="bg-gray-800/80 border border-gray-700" placeholder = "Enter Playlist URL" onChange = {(e) => setNewTask((prev) => ({...prev, spotify_url: e.target.value}))}></Input>
                                 </div>
                                 <div className = "grid gap-3">
                                     <Label className = "text-gray-300" htmlFor = "string">
                                         Tags/Hashtags
                                     </Label>
-                                    <Input className ="bg-gray-800/80 border border-gray-700" placeholder = "Add Tags Here"/>
+                                    <Input className ="bg-gray-800/80 border border-gray-700" placeholder = "Add Tags Here (Put a comma in between each one)" onChange={e => setNewTask(prev => ({ ...prev, tags: e.target.value.split(",").map(tag => tag.trim()) }))}/>
                                 </div>
                                 <Button className = "bg-green-600 "type = "submit">
                                     Submit Playlist

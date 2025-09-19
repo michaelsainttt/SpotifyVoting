@@ -7,32 +7,31 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 
-export function SignIn() {
+export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
 
     if (error) {
       setError(error.message);
     } else {
-      alert("Successfully signed in!");
-      // optionally redirect to homepage/dashboard
+      alert("Account created! Please check your email to confirm.");
+      // Optionally redirect to Sign In page
     }
 
     setLoading(false);
-
-    navigate("/")
   };
 
   return (
@@ -45,13 +44,13 @@ export function SignIn() {
       >
         <Card className="w-full bg-gray-900/70 border border-green-700/40 rounded-2xl shadow-lg transform hover:scale-105 hover:shadow-green-700 transition duration-300 ease-in-out">
           <CardHeader>
-            <CardTitle className="text-white">Sign In</CardTitle>
+            <CardTitle className="text-white">Sign Up</CardTitle>
             <CardDescription className="text-gray-400">
-              Please enter your email and password to continue!
+              Create an account to start submitting playlists and voting!
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="flex flex-col gap-6" onSubmit={handleSignIn}>
+            <form className="flex flex-col gap-6" onSubmit={handleSignUp}>
               {error && <p className="text-red-500">{error}</p>}
               <div className="grid gap-2">
                 <Label htmlFor="email" className="text-gray-300">Email</Label>
@@ -78,15 +77,15 @@ export function SignIn() {
                 />
               </div>
               <Button type="submit" className="w-full bg-green-600 hover:bg-green-700">
-                {loading ? "Signing in..." : "Sign In"}
+                {loading ? "Creating account..." : "Sign Up"}
               </Button>
             </form>
           </CardContent>
           <CardFooter className="flex justify-center">
             <p className="text-sm text-gray-400">
-              Don't have an account?{" "}
-              <Button variant="link" className="text-green-400 hover:text-green-300" onClick={() => (window.location.href = "/signup")}>
-                Sign Up
+              Already have an account?{" "}
+              <Button variant="link" className="text-green-400 hover:text-green-300">
+                Sign In
               </Button>
             </p>
           </CardFooter>

@@ -11,7 +11,7 @@ const playlists = [
     title: "Chill Vibes",
     description: "Relax and focus",
     tags: ["#Chill", "#LoFi"],
-    spotifyUrl: "https://open.spotify.com/playlist/37i9dQZF1DX4WYpdgoIcn6",
+    spotifyUrl: "https://open.spotify.com/playlist/6OWvxo7F5ciuJzF8tQ8vVj?si=0156b4bee5a84c4d",
   },
   {
     title: "Top Hits 2025",
@@ -30,7 +30,7 @@ export default function TrendingPlaylists() {
           title={pl.title}
           description={pl.description}
           tags={pl.tags}
-          spotifyUrl={pl.spotifyUrl}
+          spotify_url={pl.spotifyUrl}
         />
       ))}
     </div>
